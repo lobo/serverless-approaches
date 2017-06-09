@@ -5,6 +5,23 @@ const fileUpload = require('express-fileupload');
 const mv = require('mv');
 const app = express();
 
+function sendFile(path, res) {
+  var options = {
+    root: __dirname,
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  };
+  res.sendFile(path, options, function (error) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Sent:', path);
+    }
+  });
+}
 
 app.get('/images/:key/:name', function(req, res){
   var name = req.params.name;
@@ -17,30 +34,20 @@ app.get('/images/:key/:name', function(req, res){
   var imagePath = './images/originals/' + name;
   var resizedImageDir = './images/' + key
   var resizedImagePath = resizedImageDir + '/' + name;
-  if (!fs.existsSync(resizedImageDir)) {
-    fs.mkdirSync(resizedImageDir);
-  }
-  sharp(imagePath).resize(width, height).toFile(resizedImagePath, function(err) {
-    if(!err) {
-      var options = {
-        root: __dirname,
-        dotfiles: 'deny',
-        headers: {
-          'x-timestamp': Date.now(),
-          'x-sent': true
-        }
-      };
-      res.sendFile(resizedImagePath, options, function (error) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Sent:', resizedImagePath);
-        }
-      });
-    } else {
-      console.log(err);
+  if (fs.existsSync(resizedImagePath)) {
+    sendFile(resizedImagePath, res);
+  } else {
+    if (!fs.existsSync(resizedImageDir)) {
+      fs.mkdirSync(resizedImageDir);
     }
-  });
+    sharp(imagePath).resize(width, height).toFile(resizedImagePath, function(err) {
+      if(!err) {
+        sendFile(resizedImagePath, res);
+      } else {
+        console.log(err);
+      }
+    });
+  }
 });
 
 // default options

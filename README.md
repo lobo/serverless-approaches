@@ -1,0 +1,120 @@
+# Investigación Serverless
+
+## Descripción
+
+A continuación se describen los pasos seguidos para implementar el caso de uso "Resize Image" con los siguientes approaches:
+
+1. Serveless Lambda + S3 + APIGateway
+2. NOW
+3. Digital Ocean / Servidor Local
+
+## Implementación AWS Lambda + S3 + APIGateway
+
+Luego de crear una cuenta en AWS e ingresar en el [sitio](https://console.aws.amazon.com) logueados se realizaron los siguientes pasos:
+
+### Creación y Configuración del S3 Bucket
+
+1. En la [consola de S3](https://console.aws.amazon.com/s3), crear un nuevo [Bucket S3](http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html).
+2. Ingresar en "Permissions", "Add Bucket Policy". Agregar una bucket policy para permitir [acceso anónimo](http://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html) (ésto nos permite acceder a las imágenes directamente con el hostname sin estar logueados en AWS).
+3. Ingresar en "Static Website Hosting", "Enable website hosting" y en "Index Document" ingresar "index.html"
+4. Ingresar Save.
+
+> **Notar:** recordar el nombre del bucket creado y el hostname en el Endpoint.
+
+### Creación de la función Lambda
+
+1. En la [consola de Lambda](https://console.aws.amazon.com/lambda), ingresar en "Create a Lambda Function", "Blank Function".
+2. Para seleccionar una integración, en el cuadrado punteado elegir "API Gateway".
+3. Para permitir que cualquier usuario invoque el método de APIGateway, por seguridad, elegir Open y después Next.
+4. En "Name", ingresar resize. En "Code Entry Type", elegir Upload a .ZIP file. 
+5. [Descargar](https://github.com/awslabs/serverless-image-resizing/blob/master/dist/function.zip) la función resize provista por awslabs.
+6. Ingresar en "Choose Function package" y subir el archivo .ZIP con los contenidos de la función Lambda.
+7. Para configurar la función, en "Environment Variables", agregar dos variables:
+  * En "Key", ingresar "BUCKET"; en "Value", ingresar el nombre del bucket creado en la [sección anterior](#creacion-y-configuracion-del-s3-bucket).
+  * En "Key", ingresar "URL"; en "Value", ingresar el endpoint generado en la [sección anterior](#creacion-y-configuracion-del-s3-bucket), prefijado con http://. 
+
+8. Para definir permisos de roles para la función, en "Role", ingresar en "Create a Custom Role". Ingresar en "View Policy Document", "Edit", "Ok".
+Copiar el siguiente snippet de código en el documento de políticas de rol, reemplazando YOUR_BUCKET_NAME_HERE con el nombre del bucket creado.
+
+```
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::__YOUR_BUCKET_NAME_HERE__/*"    
+    }
+  ]
+}
+
+```
+
+> **Tip:** Notar que cualquier espacio en el documneto puede causar errores de validación.
+
+9. En "Memoria", ingresar 1536. En "Timeout", ingresar 10 segundos.
+10. Click en "Next" y "Create function".
+
+> **Notar:** Ingresar en la [sección "Triggers"](https://drive.google.com/open?id=0BxUpOzRGrfFsVlVNUGZ3eGZUVGM) y recordá el hostname en la URL de la función creada.
+
+
+### Setear la regla de redirección de S3
+
+1. En la [consola de S3](https://console.aws.amazon.com/s3), abrir el bucket creado.
+2. Expandir la sección "Static Website Hosting", e ingresar en "Edit Redirection Rules".
+3. Copiar el el siguiente snippet de código en la configuración de las reglas de redirección, reemplazando "YOUR_API_HOSTNAME_HERE" con el hostname creado en la sección anterior.
+
+```
+<RoutingRules>
+    <RoutingRule>
+        <Condition>
+            <KeyPrefixEquals/>
+            <HttpErrorCodeReturnedEquals>404</HttpErrorCodeReturnedEquals>
+        </Condition>
+        <Redirect>
+            <Protocol>https</Protocol>
+            <HostName>__YOUR_API_HOSTNAME_HERE__</HostName>
+            <ReplaceKeyPrefixWith>prod/resize?key=</ReplaceKeyPrefixWith>
+            <HttpRedirectCode>307</HttpRedirectCode>
+        </Redirect>
+    </RoutingRule>
+</RoutingRules>
+
+```
+
+### Probar la función Resize
+
+1. Correr el script **aws-upload.sh** de éste repositorio, el mismo sube al bucket 100 imágenes(con las credenciales correspondientes).
+2. Una vez subidas, correr el script **resize-images.sh**, el mismo intenta recuperar versiones de las imágenes con un nuevo tamaño.
+3. Se puede probar lo mismo desde un browser usando el endpoint del website estático del bucket creado:
+
+```
+
+http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/300×300/image_name.jpg
+
+http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/25×25/image_name.jpg
+
+http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/500×500/image_name.jpg
+
+```
+
+> **Probar con nuestro hostname:** https://k8hf0w4kk9.execute-api.us-east-1.amazonaws.com
+
+> **Troubleshooting:** Se debería ver una versión con otra dimensión de la imágen de testeo. Si no, ingresar en "Monitoring" en la función Lambda
+y chequear los logs de CloudWatch para realizar un troubleshooting.
+
+
+
+ 
+ 
+ 

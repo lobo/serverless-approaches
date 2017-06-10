@@ -143,7 +143,7 @@ now
 ## Implementación [DigitalOcean](https://www.digitalocean.com) / Servidor local
 Para este caso se decidió simplemente utilizar el mismo proyecto Node.js desarrollado en el punto anterior, pero haciendo el deploy en un VPS (Virtual Private Server) que el grupo de trabajo posee en [DigitalOcean](https://www.digitalocean.com).
 
-Para hacer el deploy se debe primero instalar el gestor de paquetes de javascript, *npm*, y Node.js.
+Para hacer el deploy se debe primero instalar el gestor de paquetes de javascript, [npm](https://www.npmjs.com/), y Node.js.
 Una vez instalados, se procede a:
 
 1. Abrir una terminal y clonar el proyecto

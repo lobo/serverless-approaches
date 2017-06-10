@@ -118,7 +118,7 @@ y chequear los logs de CloudWatch para realizar un troubleshooting.
 [Now](https://zeit.co/now) es una plataforma para hacer deploys de aplicaciones web de una manera muy simple y rápida. Soporta proyectos Docker, Node.js y páginas web estáticas. Con solo un comando, *now*, se realiza el deploy y Now proveé una URL única para acceder a la aplicación.
 
 ### Aplicación Node.js
-Para realizar la implementación de la misma funcionalidad del punto anterior, pero sin utilizar Amazon Lambda y S3, se decidió desarrollar una simple aplicación web en Node.js. La misma ofrece dos rutas, una para subir nuevas imágenes (`POST /upload`), y la otra para descargar las imágenes con el tamaño solicitado (`GET /images/ANCHOxALTO/imagen.jpg`). Para subir las imágenes, se escribió un script en python, que sube todas las imágenes JPG que se encuentran en el directorio donde está ubicado el script.
+Para realizar la implementación de la misma funcionalidad del punto anterior, pero sin utilizar Amazon Lambda y S3, se decidió desarrollar una simple aplicación web en Node.js. La misma ofrece dos rutas, una para subir nuevas imágenes (`POST /upload`), y la otra para descargar las imágenes con el tamaño solicitado (`GET /images/ANCHOxALTO/imagen.jpg`). Donde `imagen.jpg` es el nombre de la imagen original que se quiere cambiar de tamaño y que se encuentra en la carpeta `originals` luego de haber sido subida. Para subir las imágenes, se escribió un script en python, que sube todas las imágenes JPG que se encuentran en el directorio donde está ubicado el script.
 
 ### Deploy
 Para hacer deploy en *now*, debemos simplemente:

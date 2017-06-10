@@ -5,8 +5,8 @@
 A continuación se describen los pasos seguidos para implementar el caso de uso "Resize Image" con los siguientes approaches:
 
 1. Serveless Lambda + S3 + APIGateway
-2. NOW
-3. Digital Ocean / Servidor Local
+2. [Now](https://zeit.co/now)
+3. [DigitalOcean](https://www.digitalocean.com) / Servidor local
 
 ## Implementación AWS Lambda + S3 + APIGateway
 
@@ -26,12 +26,12 @@ Luego de crear una cuenta en AWS e ingresar en el [sitio](https://console.aws.am
 1. En la [consola de Lambda](https://console.aws.amazon.com/lambda), ingresar en "Create a Lambda Function", "Blank Function".
 2. Para seleccionar una integración, en el cuadrado punteado elegir "API Gateway".
 3. Para permitir que cualquier usuario invoque el método de APIGateway, por seguridad, elegir Open y después Next.
-4. En "Name", ingresar resize. En "Code Entry Type", elegir Upload a .ZIP file. 
+4. En "Name", ingresar resize. En "Code Entry Type", elegir Upload a .ZIP file.
 5. [Descargar](https://github.com/awslabs/serverless-image-resizing/blob/master/dist/function.zip) la función resize provista por awslabs.
 6. Ingresar en "Choose Function package" y subir el archivo .ZIP con los contenidos de la función Lambda.
 7. Para configurar la función, en "Environment Variables", agregar dos variables:
   * En "Key", ingresar "BUCKET"; en "Value", ingresar el nombre del bucket creado en la [sección anterior](#creacion-y-configuracion-del-s3-bucket).
-  * En "Key", ingresar "URL"; en "Value", ingresar el endpoint generado en la [sección anterior](#creacion-y-configuracion-del-s3-bucket), prefijado con http://. 
+  * En "Key", ingresar "URL"; en "Value", ingresar el endpoint generado en la [sección anterior](#creacion-y-configuracion-del-s3-bucket), prefijado con http://.
 
 8. Para definir permisos de roles para la función, en "Role", ingresar en "Create a Custom Role". Ingresar en "View Policy Document", "Edit", "Ok".
 Copiar el siguiente snippet de código en el documento de políticas de rol, reemplazando YOUR_BUCKET_NAME_HERE con el nombre del bucket creado.
@@ -113,8 +113,52 @@ http://YOUR_BUCKET_WEBSITE_HOSTNAME_HERE/500×500/image_name.jpg
 > **Troubleshooting:** Se debería ver una versión con otra dimensión de la imágen de testeo. Si no, ingresar en "Monitoring" en la función Lambda
 y chequear los logs de CloudWatch para realizar un troubleshooting.
 
+## Implementación [Now](https://zeit.co/now)
 
+[Now](https://zeit.co/now) es una plataforma para hacer deploys de aplicaciones web de una manera muy simple y rápida. Soporta proyectos Docker, Node.js y páginas web estáticas. Con solo un comando, *now*, se realiza el deploy y Now proveé una URL única para acceder a la aplicación.
 
- 
- 
- 
+### Aplicación Node.js
+Para realizar la implementación de la misma funcionalidad del punto anterior, pero sin utilizar Amazon Lambda y S3, se decidió desarrollar una simple aplicación web en Node.js. La misma ofrece dos rutas, una para subir nuevas imágenes (POST /upload), y la otra para descargar las imágenes con el tamaño solicitado (GET /images/ANCHOxALTO/imagen.jpg). Para subir las imágenes, se escribió un script en python, que sube todas las imágenes JPG que se encuentran en el directorio donde está ubicado el script.
+
+### Deploy
+Para hacer deploy en *now*, debemos simplemente:
+
+1. Instalar *now*
+```
+npm install -g now
+```
+2. Abrir una terminal y clonar el proyecto
+```
+git clone https://github.com/lobo/serverless-approaches.git
+```
+3. Pararnos en el directorio donde se encuentra el archivo *package.json*.
+```
+cd ./serverless-approaches/now-image-resizer
+```
+4. Ejecutar el comando *now*
+```
+now
+```
+
+## Implementación [DigitalOcean](https://www.digitalocean.com) / Servidor local
+Para este caso se decidió simplemente utilizar el mismo proyecto Node.js desarrollado en el punto anterior, pero haciendo el deploy en un VPS (Virtual Private Server) que el grupo de trabajo posee en [DigitalOcean](https://www.digitalocean.com).
+
+Para hacer el deploy se debe primero instalar el gestor de paquetes de javascript, *npm*, y Node.js.
+Una vez instalados, se procede a:
+
+1. Abrir una terminal y clonar el proyecto
+```
+git clone https://github.com/lobo/serverless-approaches.git
+```
+2. Pararnos en el directorio donde se encuentra el archivo *package.json*.
+```
+cd ./serverless-approaches/now-image-resizer
+```
+3. Instalar las dependencias
+```
+npm install
+```
+4. Hacer el deploy
+```
+node .
+```

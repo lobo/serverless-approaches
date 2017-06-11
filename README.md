@@ -118,7 +118,7 @@ y chequear los logs de CloudWatch para realizar un troubleshooting.
 [Now](https://zeit.co/now) es una plataforma para hacer deploys de aplicaciones web de una manera muy simple y rápida. Soporta proyectos Docker, Node.js y páginas web estáticas. Con solo un comando, *now*, se realiza el deploy y Now proveé una URL única para acceder a la aplicación.
 
 ### Aplicación Node.js
-Para realizar la implementación de la misma funcionalidad del punto anterior, pero sin utilizar Amazon Lambda y S3, se decidió desarrollar una simple aplicación web en Node.js. La misma ofrece dos rutas, una para subir nuevas imágenes (`POST /upload`), y la otra para descargar las imágenes con el tamaño solicitado (`GET /images/ANCHOxALTO/imagen.jpg`). Donde `imagen.jpg` es el nombre de la imagen original que se quiere cambiar de tamaño y que se encuentra en la carpeta `originals` luego de haber sido subida. Para subir las imágenes, se escribió un script en python, que sube todas las imágenes JPG que se encuentran en el directorio donde está ubicado el script.
+Para realizar la implementación de la misma funcionalidad del punto anterior, pero sin utilizar Amazon Lambda y S3, se decidió desarrollar una simple aplicación web en Node.js. La misma ofrece dos rutas, una para subir nuevas imágenes (`POST /upload`), y la otra para descargar las imágenes con el tamaño solicitado (`GET /images/ANCHOxALTO/imagen.jpg`). Donde `imagen.jpg` es el nombre de la imagen original que se quiere cambiar de tamaño y que se encuentra en la carpeta `originals` luego de haber sido subida. Se escribieron además dos scripts en Python, uno para subir imágenes y el otro para testear el tiempo de descarga de las imagénes resizeadas.
 
 ### Deploy
 Para hacer deploy en *now*, debemos simplemente:
@@ -133,11 +133,36 @@ git clone https://github.com/lobo/serverless-approaches.git
 ```
 3. Pararnos en el directorio donde se encuentra el archivo *package.json*.
 ```
-cd ./serverless-approaches/now-image-resizer
+cd ./serverless-approaches/node-image-resizer
 ```
 4. Ejecutar el comando *now*
 ```
 now
+```
+
+### Script de subida de imágenes
+Para ejecutar script hay que:
+
+1. Pararnos en el directorio donde se encuentra el archivo *package.json*.
+```
+cd ./serverless-approaches/node-image-resizer
+```
+2. Ejecutar el script con `python` pasando como parámetros el directorio donde se encuentran las imágenes de prueba y la URL donde está corriendo el servicio.
+```
+python ./uploader/image_uploader.py $PWD/images/originals http://localhost:8080/upload
+```
+
+### Ejecución del script de testeo
+Para ejecutar script hay que:
+
+1. Pararnos en el directorio donde se encuentra el archivo *package.json*.
+```
+cd ./serverless-approaches/node-image-resizer
+```
+2. Ejecutar el script con `python` pasando como parámetros el directorio donde se encuentran las imágenes de prueba, la URL donde está corriendo el servicio, el alto y el ancho deseados (150 píxeles para ambos por ejemplo).
+
+```
+python ./tester/get_resized_images_test.py $PWD/images/originals http://localhost:8080/images 150 150
 ```
 
 ## Implementación [DigitalOcean](https://www.digitalocean.com) / Servidor local
@@ -152,7 +177,7 @@ git clone https://github.com/lobo/serverless-approaches.git
 ```
 2. Pararnos en el directorio donde se encuentra el archivo *package.json*.
 ```
-cd ./serverless-approaches/now-image-resizer
+cd ./serverless-approaches/node-image-resizer
 ```
 3. Instalar las dependencias
 ```

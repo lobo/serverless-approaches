@@ -33,4 +33,4 @@ for file_name in all_files:
 
 millis_end = int(round(time.time() * 1000))
 millis_total = millis_end - millis_start
-print 'Test finished. ' + str(files_count) + ' images (' + str(bytes_downloaded/1024) + ' KB) were downloaded in ' + str(millis_total/1000) + ' seconds.'
+print 'Test finished. ' + str(files_count) + ' images (' + str(bytes_downloaded/1024) + ' KB) were downloaded in ' + str(millis_total) + ' milliseconds.'

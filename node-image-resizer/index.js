@@ -34,6 +34,7 @@ app.get('/images/:key/:name', function(req, res){
   var imagePath = './images/originals/' + name;
   var resizedImageDir = './images/' + key
   var resizedImagePath = resizedImageDir + '/' + name;
+  resizedImagePath = resizedImagePath.substr(0, imagePath.lastIndexOf(".")) + ".png";
   if (fs.existsSync(resizedImagePath)) {
     sendFile(resizedImagePath, res);
   } else {

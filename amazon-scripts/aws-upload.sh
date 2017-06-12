@@ -8,7 +8,7 @@ S3BUCKET=tpredes
 S3STORAGETYPE="STANDARD" #REDUCED_REDUNDANCY or STANDARD etc.
 AWSREGION="s3"
 
-aws_path=/img/
+aws_path=/
 bucket="${S3BUCKET}"
 date=$(date +"%a, %d %b %Y %T %z")
 acl="x-amz-acl:private"

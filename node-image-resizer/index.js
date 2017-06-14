@@ -55,11 +55,11 @@ app.get('/images/:key/:name', function(req, res){
 app.use(fileUpload());
 
 app.post('/upload', function(req, res) {
-  console.log(req.files);
+  //console.log(req.files);
   if (!req.files) return res.status(400).send('No files were uploaded.');
 
   var sampleFile = req.files.file;
-  console.log(req.files.file);
+  console.log('Uploading: ' + req.files.file.name);
   var pathName = './images/originals/' + sampleFile.name;
 
   // Use the mv() method to place the file somewhere on your server

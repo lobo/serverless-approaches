@@ -46,8 +46,8 @@ app.get('/images/:key/:name', function(req, res) {
       if(!err) {
         var millisEnd = Date.now();
         var millisDiff = millisEnd - millisStart;
-        // console.log('Image ' + name + ' resized to ' + key + ' pixels in ' + millisDiff + ' milliseconds.');
-        console.log(millisDiff);
+        console.log('Image ' + name + ' resized to ' + key + ' pixels in ' + millisDiff + ' milliseconds.');
+        // console.log(millisDiff);
         sendFile(resizedImagePath, res);
       } else {
         console.log(err);
@@ -64,12 +64,12 @@ app.post('/upload', function(req, res) {
   if (!req.files) return res.status(400).send('No files were uploaded.');
 
   var sampleFile = req.files.file;
-  console.log('Uploading: ' + req.files.file.name);
   var pathName = './images/originals/' + sampleFile.name;
 
   // Use the mv() method to place the file somewhere on your server
   sampleFile.mv(pathName, function(err) {
     if (err) return res.status(500).send(err);
+    console.log(sampleFile.name + " uploaded.");
     res.send('File uploaded!');
   });
 

@@ -1,5 +1,5 @@
 path=../images/originals/*
-resolution=500x500
+resolution=100x100
 
 for file in $path
 do

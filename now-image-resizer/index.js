@@ -51,11 +51,21 @@ app.get('/images/:key/:name', function(req, res){
         console.log(err);
       }
     });
-    */
+    
 
     jimp.read(imagePath, function (err, image_file) {
       if (err) throw err;
       image_file.resize(width, height).write(resizedImagePath); 
+    });
+
+    */
+
+    Jimp.read(imagePath).then(function (lenna) {
+      lenna.resize(width, height)            // resize
+           .quality(100)                 // set JPEG quality
+           .write(resizedImagePath); // save
+    }).catch(function (err) {
+      console.error(err);
     });
   }
 });

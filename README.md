@@ -152,8 +152,20 @@ cd ./serverless-approaches/node-image-resizer
 python ./uploader/image_uploader.py $PWD/images/originals http://localhost:8080/upload
 ```
 
-### Ejecución del script de testeo
-Para ejecutar script hay que:
+### Scripts de testeo
+Para ejecutar script de testeo de descarga multithreading hay que:
+
+1. Pararnos en el directorio donde se encuentra el archivo *test_threads.sh*.
+```
+cd ./serverless-approaches/node-image-resizer/tester
+```
+2. Hacer las modificaciones al archivo de acuerdo a la resolución deseada, etc.
+3. Ejecutar el script:
+```
+bash ./test_threads.sh
+```
+
+Para ejecutar script de testeo de descarga secuencial hay que:
 
 1. Pararnos en el directorio donde se encuentra el archivo *package.json*.
 ```
@@ -189,20 +201,20 @@ node .
 ```
 
 ## Resultados de las pruebas
-| Resize                | localhost | DigitalOcean | Amazon AWS |
-| --------------------- | ---------:| ------------:| ----------:|
-| 100 x 100             |           |              |            |
-| Espacio en disco      | 1811 KB   | 1801 KB      | 1800 KB    |
-| Tiempo sin cacheo     | 3.3 s     | 89 s         | 181 s      |
-| Tiempo con cacheo     | 0.3 s     | 89 s         | 82 s       |
-| Diferencia de tiempos | 3 s       | 0 s *        | 99 s       |
-| 200 x 200             |           |              |            |
-| Espacio en disco      | 6027 KB   | 5967 KB      | 5960 KB    |
-| Tiempo sin cacheo     | 5.1 s     | 136 s        | 241 s      |
-| Tiempo con cacheo     | 0.3 s     | 118 s        | 121 s      |
-| Diferencia de tiempos | 4.8 s     | 18 s         | 120 s      |
-| 500 x 500             |           |              |            |
-| Espacio en disco      | 28239 KB  | 28103 KB     | 28003 KB   |
-| Tiempo sin cacheo     | 14 s      | 289 s        | 364 s      |
-| Tiempo con cacheo     | 435 ms    | 292 s        | 222 s      |
-| Diferencia de tiempos | 14 s      | -3 s *       | 142 s      |      
+| Resize                        | localhost | DigitalOcean | Amazon AWS |
+| ----------------------------- | ---------:| ------------:| ----------:|
+| 100 x 100                     |           |              |            |
+| Espacio en disco              | 1811 KB   | 1801 KB      | 1800 KB    |
+| Tiempo de resizeo             | 1.8 s     | 1 s          | *          |
+| Tiempo de descarga sin cacheo | 3.3 s     | 89 s         | 181 s      |
+| Tiempo de descarga con cacheo | 0.3 s     | 89 s *       | 82 s       |
+| 200 x 200                     |           |              |            |
+| Espacio en disco              | 6027 KB   | 5967 KB      | 5960 KB    |
+| Tiempo de resizeo             | 1.7 s     | 2.3 s        | 1800 KB    |
+| Tiempo de descarga sin cacheo | 5.1 s     | 136 s        | 241 s      |
+| Tiempo de descarga con cacheo | 0.3 s     | 118 s        | 121 s      |
+| 500 x 500                     |           |              |            |
+| Espacio en disco              | 28239 KB  | 28103 KB     | 28003 KB   |
+| Tiempo de resizeo             | 2.1 s     | 13.1 s       | *          |
+| Tiempo de descarga sin cacheo | 14 s      | 289 s        | 364 s      |
+| Tiempo de descarga con cacheo | 435 ms    | 292 s *      | 222 s      |

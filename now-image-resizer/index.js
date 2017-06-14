@@ -43,23 +43,6 @@ app.get('/images/:key/:name', function(req, res){
       fs.mkdirSync(resizedImageDir);
     }
 
-    /*
-    sharp(imagePath).resize(width, height).toFile(resizedImagePath, function(err) {
-      if(!err) {
-        sendFile(resizedImagePath, res);
-      } else {
-        console.log(err);
-      }
-    });
-    
-
-    jimp.read(imagePath, function (err, image_file) {
-      if (err) throw err;
-      image_file.resize(width, height).write(resizedImagePath); 
-    });
-
-    */
-
     Jimp.read(imagePath).then(function (lenna) {
       lenna.resize(width, height)            // resize
            .quality(100)                 // set JPEG quality
@@ -74,7 +57,6 @@ app.get('/images/:key/:name', function(req, res){
 app.use(fileUpload());
 
 app.post('/upload', function(req, res) {
-  //console.log(req.files);
   if (!req.files) return res.status(400).send('No files were uploaded.');
 
   var sampleFile = req.files.file;

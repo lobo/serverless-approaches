@@ -187,3 +187,22 @@ npm install
 ```
 node .
 ```
+
+## Resultados de las pruebas
+| Resize                | localhost | DigitalOcean | Amazon AWS |
+| --------------------- | ---------:| ------------:| ----------:|
+| 100 x 100             |           |              |            |
+| Espacio en disco      | 1811 KB   | 1801 KB      | 1800 KB    |
+| Tiempo sin cacheo     | 3.3 s     | 89 s         | 181 s      |
+| Tiempo con cacheo     | 0.3 s     | 89 s         | 82 s       |
+| Diferencia de tiempos | 3 s       | 0 s *        | 99 s       |
+| 200 x 200             |           |              |            |
+| Espacio en disco      | 6027 KB   | 5967 KB      | 5960 KB    |
+| Tiempo sin cacheo     | 5.1 s     | 136 s        | 241 s      |
+| Tiempo con cacheo     | 0.3 s     | 118 s        | 121 s      |
+| Diferencia de tiempos | 4.8 s     | 18 s         | 120 s      |
+| 500 x 500             |           |              |            |
+| Espacio en disco      | 28239 KB  | 28103 KB     | 28003 KB   |
+| Tiempo sin cacheo     | 14 s      | 289 s        | 364 s      |
+| Tiempo con cacheo     | 435 ms    | 292 s        | 222 s      |
+| Diferencia de tiempos | 14 s      | -3 s *       | 142 s      |      

@@ -18,12 +18,12 @@ function sendFile(path, res) {
     if (error) {
       console.log(error);
     } else {
-      console.log('Sent:', path);
+      // console.log('Sent:', path);
     }
   });
 }
 
-app.get('/images/:key/:name', function(req, res){
+app.get('/images/:key/:name', function(req, res) {
   var name = req.params.name;
   var key = req.params.key;
 
@@ -34,15 +34,20 @@ app.get('/images/:key/:name', function(req, res){
   var imagePath = './images/originals/' + name;
   var resizedImageDir = './images/' + key
   var resizedImagePath = resizedImageDir + '/' + name;
-  resizedImagePath = resizedImagePath.substr(0, imagePath.lastIndexOf(".")) + ".png";
+  resizedImagePath = resizedImagePath.substr(0, imagePath.lastIndexOf('.')) + '.png';
   if (fs.existsSync(resizedImagePath)) {
     sendFile(resizedImagePath, res);
   } else {
+    var millisStart = Date.now();
     if (!fs.existsSync(resizedImageDir)) {
       fs.mkdirSync(resizedImageDir);
     }
     sharp(imagePath).resize(width, height).toFile(resizedImagePath, function(err) {
       if(!err) {
+        var millisEnd = Date.now();
+        var millisDiff = millisEnd - millisStart;
+        // console.log('Image ' + name + ' resized to ' + key + ' pixels in ' + millisDiff + ' milliseconds.');
+        console.log(millisDiff);
         sendFile(resizedImagePath, res);
       } else {
         console.log(err);
@@ -71,5 +76,5 @@ app.post('/upload', function(req, res) {
 });
 
 app.listen(8080, function () {
-  console.log('Example app listening on port 8080!')
+  console.log('Image resizer listening on port 8080!')
 })
